@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KARAKULI — Learning Hub</title>
+  <style>
+    /* ========== RESET & BASE ========== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #FFF8F0;
+      color: #2D3436;
+      line-height: 1.5;
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ========== LAYOUT ========== */
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 0 16px 40px;
+    }
+
+    /* ========== HEADER ========== */
+    .header {
+      text-align: center;
+      padding: 24px 0 8px;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: #E85A3A;
+    }
+
+    .greeting {
+      font-size: 26px;
+      font-weight: 700;
+      margin-top: 8px;
+      color: #2D3436;
+    }
+
+    /* ========== CREDIT CARD ========== */
+    .credit-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-top: 20px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.06);
+    }
+
+    .credit-card__title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #6B7280;
+      margin-bottom: 12px;
+    }
+
+    .credit-card__number {
+      font-size: 36px;
+      font-weight: 700;
+      color: #2D3436;
+    }
+
+    .credit-card__number span {
+      font-size: 18px;
+      font-weight: 400;
+      color: #9CA3AF;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 10px;
+      background: #F0EBE5;
+      border-radius: 5px;
+      margin: 12px 0;
+      overflow: hidden;
+    }
+
+    .progress-bar__fill {
+      height: 100%;
+      background: #5BBD6B;
+      border-radius: 5px;
+      transition: width .4s ease;
+    }
+
+    .credit-card__meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      color: #6B7280;
+      margin-top: 4px;
+    }
+
+    .credit-card__upgrade {
+      margin-top: 16px;
+      text-align: center;
+    }
+
+    .credit-card__upgrade a {
+      color: #E85A3A;
+      font-weight: 600;
+      font-size: 15px;
+      text-decoration: none;
+    }
+
+    .credit-card__upgrade a:hover { text-decoration: underline; }
+
+    /* ========== SECTION TITLES ========== */
+    .section-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin: 32px 0 4px;
+    }
+
+    .section-subtitle {
+      font-size: 15px;
+      color: #6B7280;
+      margin-bottom: 16px;
+    }
+
+    /* ========== FILTER TABS ========== */
+    .filters {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 12px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .filters::-webkit-scrollbar { display: none; }
+
+    .filter-btn {
+      flex-shrink: 0;
+      padding: 6px 16px;
+      border-radius: 20px;
+      border: 1.5px solid #F0EBE5;
+      background: #fff;
+      font-size: 14px;
+      font-weight: 500;
+      color: #6B7280;
+      cursor: pointer;
+      transition: all .15s ease;
+    }
+
+    .filter-btn.active {
+      background: #E85A3A;
+      color: #fff;
+      border-color: #E85A3A;
+    }
+
+    /* ========== DAY HEADER ========== */
+    .day-header {
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #9CA3AF;
+      margin: 20px 0 8px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid #F0EBE5;
+    }
+
+    /* ========== CLASS CARD ========== */
+    .class-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.06);
+      transition: opacity .2s;
+    }
+
+    .class-card.disabled { opacity: .55; }
+
+    .class-card__header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .class-card__icon { font-size: 22px; }
+
+    .class-card__subject {
+      font-size: 17px;
+      font-weight: 600;
+    }
+
+    .class-card__details {
+      font-size: 14px;
+      color: #6B7280;
+      margin-bottom: 4px;
+    }
+
+    .class-card__credits {
+      font-size: 14px;
+      color: #6B7280;
+    }
+
+    .class-card__credits .spots {
+      color: #E85A3A;
+      font-weight: 600;
+    }
+
+    .class-card__desc {
+      font-size: 14px;
+      color: #6B7280;
+      font-style: italic;
+      margin: 8px 0 12px;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      text-align: center;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background .15s ease;
+    }
+
+    .btn-primary {
+      background: #E85A3A;
+      color: #fff;
+    }
+
+    .btn-primary:hover { background: #d14b2d; }
+
+    .btn-disabled {
+      background: #CCCCCC;
+      color: #fff;
+      cursor: not-allowed;
+    }
+
+    .btn-waitlist {
+      background: #F0EBE5;
+      color: #6B7280;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1.5px solid #E85A3A;
+      color: #E85A3A;
+    }
+
+    /* ========== EMPTY STATES ========== */
+    .empty-state {
+      text-align: center;
+      padding: 32px 16px;
+      color: #9CA3AF;
+      font-size: 15px;
+    }
+
+    .empty-state a {
+      color: #E85A3A;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    /* ========== ZERO CREDITS BANNER ========== */
+    .zero-credits-banner {
+      background: #fff;
+      border-radius: 12px;
+      padding: 32px 24px;
+      margin-top: 20px;
+      text-align: center;
+      box-shadow: 0 2px 12px rgba(0,0,0,.06);
+    }
+
+    .zero-credits-banner__emoji { font-size: 40px; margin-bottom: 8px; }
+    .zero-credits-banner__title { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+    .zero-credits-banner__text { font-size: 15px; color: #6B7280; margin-bottom: 16px; }
+
+    /* ========== TUTOR CARDS ========== */
+    .tutors-scroll {
+      display: flex;
+      gap: 16px;
+      overflow-x: auto;
+      padding-bottom: 12px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .tutors-scroll::-webkit-scrollbar { display: none; }
+
+    .tutor-card {
+      flex: 0 0 260px;
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.06);
+    }
+
+    .tutor-card__avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 12px;
+    }
+
+    .tutor-card__name {
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .tutor-card__subjects {
+      font-size: 14px;
+      color: #E85A3A;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .tutor-card__bio {
+      font-size: 14px;
+      color: #6B7280;
+      margin-bottom: 8px;
+    }
+
+    .tutor-card__langs {
+      font-size: 13px;
+      color: #9CA3AF;
+    }
+
+    /* ========== CLASS HISTORY ========== */
+    .history-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid #F0EBE5;
+      font-size: 15px;
+    }
+
+    .history-item:last-child { border-bottom: none; }
+
+    .history-item__check {
+      color: #5BBD6B;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .history-item__date {
+      color: #9CA3AF;
+      font-size: 13px;
+      min-width: 60px;
+    }
+
+    .history-summary {
+      font-size: 14px;
+      color: #6B7280;
+      margin-top: 12px;
+    }
+
+    /* ========== REQUEST CLASS ========== */
+    .request-box {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-top: 16px;
+      text-align: center;
+      box-shadow: 0 2px 12px rgba(0,0,0,.06);
+    }
+
+    .request-box__text {
+      font-size: 15px;
+      color: #6B7280;
+      margin-bottom: 12px;
+    }
+
+    /* ========== FOOTER ========== */
+    .footer {
+      text-align: center;
+      padding: 32px 0 16px;
+      color: #9CA3AF;
+      font-size: 13px;
+    }
+
+    .footer a {
+      color: #E85A3A;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 15px;
+    }
+
+    .footer a:hover { text-decoration: underline; }
+
+    .footer__copyright { margin-top: 16px; }
+
+    /* ========== DESKTOP ========== */
+    @media (min-width: 640px) {
+      .container { padding: 0 24px 60px; }
+      .greeting { font-size: 30px; }
+      .tutors-scroll { flex-wrap: wrap; }
+      .tutor-card { flex: 1 1 260px; }
+    }
+  </style>
+</head>
+<body>
+  <script src="schedule.js"></script>
+  <script>
+    // ============================================
+    // === EDIT THIS PER CLIENT ==================
+    // ============================================
+    const CLIENT_DATA = {
+      parentName: "Sarah",
+      childName: "Misha",
+      childAge: 8,
+      creditsRemaining: 50,
+      creditsTotal: 50,
+      plan: "Trial",                     // "Trial" or "Monthly"
+      teamWhatsApp: "972XXXXXXXXX",      // no +, just digits
+      upgradeUrl: "#",                   // Stripe payment link
+
+      completedClasses: [
+        // { date: "2026-03-20", subject: "Math", tutor: "Kate K." },
+      ],
+    };
+    // ============================================
+  </script>
+
+  <div class="container" id="app"></div>
+
+  <script>
+    // ============================================
+    // RENDERING ENGINE
+    // ============================================
+    const DAY_ORDER = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+    let activeFilter = "All";
+
+    function esc(str) {
+      const d = document.createElement("div");
+      d.textContent = str;
+      return d.innerHTML;
+    }
+
+    function getInitials(name) {
+      return name.split(" ").map(n => n[0]).join("");
+    }
+
+    function parseAgeGroup(ag) {
+      const [min, max] = ag.split("-").map(Number);
+      return { min, max };
+    }
+
+    function childFitsAge(ageGroup) {
+      const { min, max } = parseAgeGroup(ageGroup);
+      return CLIENT_DATA.childAge >= min && CLIENT_DATA.childAge <= max;
+    }
+
+    function getFilteredSchedule() {
+      let filtered = SCHEDULE.filter(c => childFitsAge(c.ageGroup));
+      if (activeFilter !== "All") {
+        filtered = filtered.filter(c => c.subject === activeFilter);
+      }
+      return filtered;
+    }
+
+    function groupByDay(classes) {
+      const grouped = {};
+      for (const c of classes) {
+        if (!grouped[c.day]) grouped[c.day] = [];
+        grouped[c.day].push(c);
+      }
+      return grouped;
+    }
+
+    function signUp(classItem) {
+      const message = encodeURIComponent(
+        `Hi! I'd like to sign up ${CLIENT_DATA.childName} (age ${CLIENT_DATA.childAge}) for:\n\n` +
+        `\u{1F4DA} ${classItem.subject} with ${classItem.tutor}\n` +
+        `\u{1F4C5} ${classItem.day} at ${classItem.time}\n\n` +
+        `(${classItem.credits} credits)`
+      );
+      window.open(`https://wa.me/${CLIENT_DATA.teamWhatsApp}?text=${message}`, "_blank");
+    }
+
+    function requestClass() {
+      const message = encodeURIComponent(
+        `Hi! I'd like to request a class for ${CLIENT_DATA.childName} (age ${CLIENT_DATA.childAge}).\nSubject: ___\nPreferred day/time: ___`
+      );
+      window.open(`https://wa.me/${CLIENT_DATA.teamWhatsApp}?text=${message}`, "_blank");
+    }
+
+    function joinWaitlist(classItem) {
+      const message = encodeURIComponent(
+        `Hi! I'd like to join the waitlist for:\n\n` +
+        `\u{1F4DA} ${classItem.subject} with ${classItem.tutor}\n` +
+        `\u{1F4C5} ${classItem.day} at ${classItem.time}\n\n` +
+        `for ${CLIENT_DATA.childName} (age ${CLIENT_DATA.childAge})`
+      );
+      window.open(`https://wa.me/${CLIENT_DATA.teamWhatsApp}?text=${message}`, "_blank");
+    }
+
+    function chatWithUs() {
+      const message = encodeURIComponent(`Hi! I have a question about ${CLIENT_DATA.childName}'s classes.`);
+      window.open(`https://wa.me/${CLIENT_DATA.teamWhatsApp}?text=${message}`, "_blank");
+    }
+
+    // ---------- BUILD HTML ----------
+
+    function renderHeader() {
+      return `
+        <header class="header">
+          <div class="logo">KARAKULI</div>
+          <h1 class="greeting">${esc(CLIENT_DATA.childName)}'s Learning Hub</h1>
+        </header>`;
+    }
+
+    function renderCredits() {
+      const { creditsRemaining, creditsTotal, plan } = CLIENT_DATA;
+      const pct = creditsTotal > 0 ? (creditsRemaining / creditsTotal) * 100 : 0;
+      const classesLeft = Math.floor(creditsRemaining / 25);
+
+      if (creditsRemaining <= 0) {
+        return `
+          <div class="zero-credits-banner">
+            <div class="zero-credits-banner__emoji">\u{1F389}</div>
+            <div class="zero-credits-banner__title">You've used all your credits!</div>
+            <div class="zero-credits-banner__text">Upgrade to keep learning.</div>
+            <a href="${esc(CLIENT_DATA.upgradeUrl)}" class="btn btn-primary">Upgrade to Monthly</a>
+          </div>`;
+      }
+
+      return `
+        <div class="credit-card">
+          <div class="credit-card__title">\u{1F3AB} Your Credits</div>
+          <div class="credit-card__number">${creditsRemaining} <span>/ ${creditsTotal}</span></div>
+          <div class="progress-bar"><div class="progress-bar__fill" style="width:${pct}%"></div></div>
+          <div class="credit-card__meta">
+            <span>Plan: ${esc(plan)}</span>
+            <span>Enough for ~${classesLeft} class${classesLeft !== 1 ? "es" : ""}</span>
+          </div>
+          <div class="credit-card__upgrade">
+            <a href="${esc(CLIENT_DATA.upgradeUrl)}">Need more credits? Upgrade &rarr;</a>
+          </div>
+        </div>`;
+    }
+
+    function renderSchedule() {
+      if (CLIENT_DATA.creditsRemaining <= 0) return "";
+
+      const subjects = [...new Set(SCHEDULE.filter(c => childFitsAge(c.ageGroup)).map(c => c.subject))];
+      const filtered = getFilteredSchedule();
+      const grouped = groupByDay(filtered);
+
+      let filtersHtml = `
+        <div class="filters" id="filters">
+          <button class="filter-btn ${activeFilter === "All" ? "active" : ""}" data-filter="All">All</button>
+          ${subjects.map(s => `<button class="filter-btn ${activeFilter === s ? "active" : ""}" data-filter="${esc(s)}">${esc(s)}</button>`).join("")}
+        </div>`;
+
+      let cardsHtml = "";
+
+      if (filtered.length === 0 && subjects.length === 0) {
+        cardsHtml = `
+          <div class="empty-state">
+            No classes for ${esc(CLIENT_DATA.childName)}'s age group this week.<br>
+            We're adding more &mdash; <a href="javascript:void(0)" onclick="requestClass()">want to request one?</a>
+          </div>`;
+      } else if (filtered.length === 0) {
+        cardsHtml = `
+          <div class="empty-state">
+            No classes match this filter. Try another subject!
+          </div>`;
+      } else {
+        for (const day of DAY_ORDER) {
+          if (!grouped[day]) continue;
+          cardsHtml += `<div class="day-header">${day}</div>`;
+          for (const c of grouped[day]) {
+            const notEnough = CLIENT_DATA.creditsRemaining < c.credits;
+            const full = c.spotsLeft <= 0;
+            const disabled = notEnough || full;
+            let btnHtml;
+            if (full) {
+              btnHtml = `<button class="btn btn-waitlist" onclick='joinWaitlist(${JSON.stringify(c)})'>Full &mdash; join waitlist</button>`;
+            } else if (notEnough) {
+              btnHtml = `<a href="${esc(CLIENT_DATA.upgradeUrl)}" class="btn btn-disabled" style="pointer-events:auto;background:#CCC;">Not enough credits &mdash; upgrade</a>`;
+            } else {
+              btnHtml = `<button class="btn btn-primary" onclick='signUp(${JSON.stringify(c)})'>Sign Up &rarr;</button>`;
+            }
+            cardsHtml += `
+              <div class="class-card ${disabled ? "disabled" : ""}">
+                <div class="class-card__header">
+                  <span class="class-card__icon">${c.icon}</span>
+                  <span class="class-card__subject">${esc(c.subject)} with ${esc(c.tutor)}</span>
+                </div>
+                <div class="class-card__details">${esc(c.time)} &middot; ${c.duration} min &middot; Ages ${esc(c.ageGroup)}</div>
+                <div class="class-card__credits">${c.credits} credits${c.spotsLeft > 0 ? ` &middot; <span class="spots">${c.spotsLeft}/${c.maxSpots || 3} spots left</span>` : ""}</div>
+                <div class="class-card__desc">${esc(c.description)}</div>
+                ${btnHtml}
+              </div>`;
+          }
+        }
+      }
+
+      return `
+        <h2 class="section-title">This Week's Classes</h2>
+        <p class="section-subtitle">Pick a class, tap "Sign up", and we'll save your spot.</p>
+        ${filtersHtml}
+        ${cardsHtml}
+        <div class="request-box">
+          <div class="request-box__text">Can't find the right time?</div>
+          <button class="btn btn-outline" onclick="requestClass()">Request a Class</button>
+        </div>`;
+    }
+
+    function renderTutors() {
+      const relevantTutors = TUTORS.filter(t =>
+        t.subjects.some(subj => SCHEDULE.some(c => c.tutor === t.name && childFitsAge(c.ageGroup)))
+      );
+      if (relevantTutors.length === 0) return "";
+
+      const cards = relevantTutors.map(t => `
+        <div class="tutor-card">
+          <div class="tutor-card__avatar" style="background:${t.color}">${getInitials(t.name)}</div>
+          <div class="tutor-card__name">${esc(t.name)}</div>
+          <div class="tutor-card__subjects">${t.subjects.join(" \u00B7 ")}</div>
+          <div class="tutor-card__bio">${esc(t.bio)}</div>
+          <div class="tutor-card__langs">\u{1F5E3} ${t.languages.join(", ")}</div>
+        </div>`).join("");
+
+      return `
+        <h2 class="section-title">Your Tutors</h2>
+        <div class="tutors-scroll">${cards}</div>`;
+    }
+
+    function renderHistory() {
+      const { completedClasses, childName, creditsTotal, creditsRemaining } = CLIENT_DATA;
+      const creditsUsed = creditsTotal - creditsRemaining;
+
+      let body;
+      if (!completedClasses || completedClasses.length === 0) {
+        body = `<div class="empty-state">No classes yet &mdash; pick your first one above! \u{1F680}</div>`;
+      } else {
+        const items = completedClasses.map(c => `
+          <div class="history-item">
+            <span class="history-item__check">\u2705</span>
+            <span class="history-item__date">${esc(c.date)}</span>
+            <span>${esc(c.subject)} with ${esc(c.tutor)}</span>
+          </div>`).join("");
+        body = items + `<div class="history-summary">Credits used: ${creditsUsed} / ${creditsTotal}</div>`;
+      }
+
+      return `
+        <h2 class="section-title">${esc(childName)}'s Classes</h2>
+        ${body}`;
+    }
+
+    function renderFooter() {
+      return `
+        <footer class="footer">
+          <div>Need help?</div>
+          <a href="javascript:void(0)" onclick="chatWithUs()">Chat with us on WhatsApp</a>
+          <div class="footer__copyright">&copy; 2026 KARAKULI</div>
+        </footer>`;
+    }
+
+    // ---------- MOUNT ----------
+
+    function render() {
+      document.getElementById("app").innerHTML =
+        renderHeader() +
+        renderCredits() +
+        renderSchedule() +
+        renderTutors() +
+        renderHistory() +
+        renderFooter();
+
+      // bind filter clicks
+      document.querySelectorAll(".filter-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          activeFilter = btn.dataset.filter;
+          render();
+        });
+      });
+    }
+
+    render();
+    document.title = `${CLIENT_DATA.childName}'s Learning Hub — KARAKULI`;
+  </script>
+</body>
+</html>
