@@ -598,7 +598,16 @@ async function fetchSheet(tabName) {
 // ============================================
 const DAY_ORDER = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 let CLIENT = null;
-let SCHEDULE = [];
+let SCHEDULE = [
+  { subject: "English A2", tutor: "Kate", day: "Monday", time: "16:00", duration: 45, ageGroup: "5-12", credits: 25, spotsLeft: 3, maxSpots: 3, description: "" },
+  { subject: "Coding Roblox", tutor: "Antonia", day: "Monday", time: "14:00", duration: 45, ageGroup: "8-12", credits: 25, spotsLeft: 3, maxSpots: 3, description: "" },
+  { subject: "Music", tutor: "Nina", day: "Tuesday", time: "10:00", duration: 45, ageGroup: "5-12", credits: 25, spotsLeft: 3, maxSpots: 3, description: "" },
+  { subject: "English B1", tutor: "Kate", day: "Wednesday", time: "16:00", duration: 45, ageGroup: "5-12", credits: 25, spotsLeft: 3, maxSpots: 3, description: "" },
+  { subject: "Coding Scratch", tutor: "Antonia", day: "Wednesday", time: "11:00", duration: 45, ageGroup: "5-12", credits: 25, spotsLeft: 3, maxSpots: 3, description: "" },
+  { subject: "Math 9-12", tutor: "Giang", day: "Thursday", time: "10:00", duration: 45, ageGroup: "9-12", credits: 25, spotsLeft: 3, maxSpots: 3, description: "" },
+  { subject: "Math 5-8", tutor: "Giang", day: "Saturday", time: "12:00", duration: 45, ageGroup: "5-8", credits: 25, spotsLeft: 3, maxSpots: 3, description: "" },
+  { subject: "Art", tutor: "Giang", day: "Sunday", time: "11:00", duration: 45, ageGroup: "5-12", credits: 25, spotsLeft: 3, maxSpots: 3, description: "" },
+];
 let TUTORS = [];
 let HISTORY = [];
 let activeFilter = "All";
@@ -979,12 +988,10 @@ async function boot() {
       return;
     }
 
-    // Fetch all three sheets in parallel
-    const [clientsRaw, scheduleRaw, historyRaw, tutorsRaw] = await Promise.all([
+    // Fetch client data and history from Google Sheets
+    const [clientsRaw, historyRaw] = await Promise.all([
       fetchSheet("Clients"),
-      fetchSheet("Schedule"),
       fetchSheet("History"),
-      fetchSheet("Tutors"),
     ]);
 
     // Find client row (match by clientId column, case-insensitive)
@@ -1007,19 +1014,7 @@ async function boot() {
       plan: clientRow.plan || "Trial",
     };
 
-    // Parse schedule
-    SCHEDULE = scheduleRaw.map(r => ({
-      subject: r.subject || "",
-      tutor: r.tutor || "",
-      day: r.day || "",
-      time: r.time || "",
-      duration: parseInt(r.duration) || 45,
-      ageGroup: r.ageGroup || "0-99",
-      credits: parseInt(r.credits) || 25,
-      spotsLeft: parseInt(r.spotsLeft) || 0,
-      maxSpots: parseInt(r.maxSpots) || 3,
-      description: r.description || "",
-    }));
+    // Schedule is hardcoded above — no need to fetch from Sheets
 
     // Parse history (filter by clientId)
     HISTORY = historyRaw
@@ -1029,14 +1024,6 @@ async function boot() {
         subject: r.subject || "",
         tutor: r.tutor || "",
       }));
-
-    // Parse tutors
-    TUTORS = tutorsRaw.map(r => ({
-      name: r.name || "",
-      subjects: r.subjects || "",
-      bio: r.bio || "",
-      languages: r.languages || "",
-    }));
 
     // Override WhatsApp / upgrade from client row if present
     if (clientRow.teamWhatsApp) CONFIG.teamWhatsApp = clientRow.teamWhatsApp;
