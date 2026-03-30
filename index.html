@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KARAKULI — Learning Space</title>
+  <style>
+    /* ========== RESET & BASE ========== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #FFF8F0;
+      color: #2D3436;
+      line-height: 1.5;
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 0 16px 40px;
+    }
+
+    /* ========== LOADING ========== */
+    .loading {
+      text-align: center;
+      padding: 80px 20px;
+    }
+
+    .loading__spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #F0EBE5;
+      border-top-color: #E85A3A;
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .loading__text {
+      color: #9CA3AF;
+      font-size: 15px;
+    }
+
+    /* ========== ERROR ========== */
+    .error-state {
+      text-align: center;
+      padding: 80px 20px;
+    }
+
+    .error-state__emoji { font-size: 48px; margin-bottom: 12px; }
+    .error-state__title { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+    .error-state__text { font-size: 15px; color: #6B7280; }
+
+    /* ========== HEADER ========== */
+    .header {
+      text-align: center;
+      padding: 24px 0 8px;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: #E85A3A;
+    }
+
+    .greeting {
+      font-size: 26px;
+      font-weight: 700;
+      margin-top: 8px;
+      color: #2D3436;
+    }
+
+    /* ========== CREDIT CARD ========== */
+    .credit-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-top: 20px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.06);
+    }
+
+    .credit-card__title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #6B7280;
+      margin-bottom: 12px;
+    }
+
+    .credit-card__number {
+      font-size: 36px;
+      font-weight: 700;
+      color: #2D3436;
+    }
+
+    .credit-card__number span {
+      font-size: 18px;
+      font-weight: 400;
+      color: #9CA3AF;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 10px;
+      background: #F0EBE5;
+      border-radius: 5px;
+      margin: 12px 0;
+      overflow: hidden;
+    }
+
+    .progress-bar__fill {
+      height: 100%;
+      background: #5BBD6B;
+      border-radius: 5px;
+      transition: width .4s ease;
+    }
+
+    .credit-card__meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      color: #6B7280;
+      margin-top: 4px;
+    }
+
+    .credit-card__upgrade {
+      margin-top: 16px;
+      text-align: center;
+    }
+
+    .credit-card__upgrade a {
+      color: #E85A3A;
+      font-weight: 600;
+      font-size: 15px;
+      text-decoration: none;
+    }
+
+    .credit-card__upgrade a:hover { text-decoration: underline; }
+
+    /* ========== SECTIONS ========== */
+    .section-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin: 32px 0 4px;
+    }
+
+    .section-subtitle {
+      font-size: 15px;
+      color: #6B7280;
+      margin-bottom: 16px;
+    }
+
+    /* ========== FILTERS ========== */
+    .filters {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 12px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .filters::-webkit-scrollbar { display: none; }
+
+    .filter-btn {
+      flex-shrink: 0;
+      padding: 6px 16px;
+      border-radius: 20px;
+      border: 1.5px solid #F0EBE5;
+      background: #fff;
+      font-size: 14px;
+      font-weight: 500;
+      color: #6B7280;
+      cursor: pointer;
+      transition: all .15s ease;
+    }
+
+    .filter-btn.active {
+      background: #E85A3A;
+      color: #fff;
+      border-color: #E85A3A;
+    }
+
+    /* ========== DAY HEADER ========== */
+    .day-header {
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #9CA3AF;
+      margin: 20px 0 8px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid #F0EBE5;
+    }
+
+    /* ========== CLASS CARD ========== */
+    .class-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.06);
+      transition: opacity .2s;
+    }
+
+    .class-card.disabled { opacity: .55; }
+
+    .class-card__header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .class-card__icon { font-size: 22px; }
+    .class-card__subject { font-size: 17px; font-weight: 600; }
+
+    .class-card__details {
+      font-size: 14px;
+      color: #6B7280;
+      margin-bottom: 4px;
+    }
+
+    .class-card__credits {
+      font-size: 14px;
+      color: #6B7280;
+    }
+
+    .class-card__credits .spots {
+      color: #E85A3A;
+      font-weight: 600;
+    }
+
+    .class-card__desc {
+      font-size: 14px;
+      color: #6B7280;
+      font-style: italic;
+      margin: 8px 0 12px;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      text-align: center;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background .15s ease;
+    }
+
+    .btn-primary { background: #E85A3A; color: #fff; }
+    .btn-primary:hover { background: #d14b2d; }
+    .btn-disabled { background: #CCCCCC; color: #fff; cursor: not-allowed; }
+    .btn-waitlist { background: #F0EBE5; color: #6B7280; }
+    .btn-outline { background: transparent; border: 1.5px solid #E85A3A; color: #E85A3A; }
+
+    /* ========== EMPTY / ZERO ========== */
+    .empty-state {
+      text-align: center;
+      padding: 32px 16px;
+      color: #9CA3AF;
+      font-size: 15px;
+    }
+
+    .empty-state a { color: #E85A3A; font-weight: 600; text-decoration: none; }
+
+    .zero-credits-banner {
+      background: #fff;
+      border-radius: 12px;
+      padding: 32px 24px;
+      margin-top: 20px;
+      text-align: center;
+      box-shadow: 0 2px 12px rgba(0,0,0,.06);
+    }
+
+    .zero-credits-banner__emoji { font-size: 40px; margin-bottom: 8px; }
+    .zero-credits-banner__title { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+    .zero-credits-banner__text { font-size: 15px; color: #6B7280; margin-bottom: 16px; }
+
+    /* ========== TUTORS ========== */
+    .tutors-scroll {
+      display: flex;
+      gap: 16px;
+      overflow-x: auto;
+      padding-bottom: 12px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .tutors-scroll::-webkit-scrollbar { display: none; }
+
+    .tutor-card {
+      flex: 0 0 260px;
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.06);
+    }
+
+    .tutor-card__avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 12px;
+    }
+
+    .tutor-card__name { font-size: 17px; font-weight: 700; }
+
+    .tutor-card__subjects {
+      font-size: 14px;
+      color: #E85A3A;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .tutor-card__bio { font-size: 14px; color: #6B7280; margin-bottom: 8px; }
+    .tutor-card__langs { font-size: 13px; color: #9CA3AF; }
+
+    /* ========== HISTORY ========== */
+    .history-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid #F0EBE5;
+      font-size: 15px;
+    }
+
+    .history-item:last-child { border-bottom: none; }
+    .history-item__check { color: #5BBD6B; font-size: 18px; flex-shrink: 0; }
+    .history-item__date { color: #9CA3AF; font-size: 13px; min-width: 60px; }
+
+    .history-summary {
+      font-size: 14px;
+      color: #6B7280;
+      margin-top: 12px;
+    }
+
+    /* ========== REQUEST ========== */
+    .request-box {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-top: 16px;
+      text-align: center;
+      box-shadow: 0 2px 12px rgba(0,0,0,.06);
+    }
+
+    .request-box__text { font-size: 15px; color: #6B7280; margin-bottom: 12px; }
+
+    /* ========== FOOTER ========== */
+    .footer {
+      text-align: center;
+      padding: 32px 0 16px;
+      color: #9CA3AF;
+      font-size: 13px;
+    }
+
+    .footer a { color: #E85A3A; text-decoration: none; font-weight: 600; font-size: 15px; }
+    .footer a:hover { text-decoration: underline; }
+    .footer__copyright { margin-top: 16px; }
+
+    /* ========== MODAL ========== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 16px;
+      animation: fadeIn .2s ease;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .modal {
+      background: #fff;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 400px;
+      overflow: hidden;
+      animation: slideUp .25s ease;
+    }
+
+    @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+    .modal__header {
+      padding: 20px 24px 0;
+      text-align: center;
+    }
+
+    .modal__emoji { font-size: 40px; margin-bottom: 8px; }
+    .modal__title { font-size: 20px; font-weight: 700; }
+
+    .modal__body {
+      padding: 16px 24px;
+    }
+
+    .modal__detail {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      font-size: 15px;
+      color: #2D3436;
+      border-bottom: 1px solid #F0EBE5;
+    }
+
+    .modal__detail:last-child { border-bottom: none; }
+    .modal__detail-icon { font-size: 18px; width: 24px; text-align: center; }
+    .modal__detail-label { color: #9CA3AF; font-size: 13px; min-width: 60px; }
+
+    .modal__footer {
+      padding: 8px 24px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .modal__footer .btn { font-size: 16px; padding: 14px; }
+
+    .btn-cancel {
+      background: transparent;
+      color: #6B7280;
+      border: none;
+      font-size: 15px;
+      cursor: pointer;
+      padding: 8px;
+    }
+
+    /* Success state in modal */
+    .modal__success {
+      padding: 32px 24px;
+      text-align: center;
+    }
+
+    .modal__success-emoji { font-size: 48px; margin-bottom: 12px; }
+    .modal__success-title { font-size: 20px; font-weight: 700; color: #5BBD6B; margin-bottom: 8px; }
+    .modal__success-text { font-size: 15px; color: #6B7280; margin-bottom: 20px; }
+
+    /* ========== DESKTOP ========== */
+    @media (min-width: 640px) {
+      .container { padding: 0 24px 60px; }
+      .greeting { font-size: 30px; }
+      .tutors-scroll { flex-wrap: wrap; }
+      .tutor-card { flex: 1 1 260px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container" id="app">
+  <div class="loading">
+    <div class="loading__spinner"></div>
+    <div class="loading__text">Loading your dashboard...</div>
+  </div>
+</div>
+
+<script>
+// ============================================
+// CONFIG — edit these two values once
+// ============================================
+const CONFIG = {
+  // 1. Your published Google Sheet ID (the long string from the URL)
+  sheetId: "1i4EOD8oSq31kj62SiG33HbSMzZQ6dv_5",
+
+  // 2. WhatsApp number of the KARAKULI team (digits only, no +)
+  teamWhatsApp: "972XXXXXXXXX",
+
+  // 3. Stripe upgrade link
+  upgradeUrl: "#",
+
+  // 4. Google Apps Script URL (for saving bookings to Sheets)
+  //    Deploy your Apps Script as a web app and paste the URL here
+  appsScriptUrl: "",
+};
+
+// ============================================
+// SUBJECT ICONS (hard to put in spreadsheets)
+// ============================================
+const SUBJECT_ICONS = {
+  "Math 9-12": "\u{1F9EE}",
+  "Math 5-8": "\u{1F9EE}",
+  "Art": "\u{1F3A8}",
+  "Coding Roblox": "\u{1F3AE}",
+  "Coding Scratch": "\u{1F4BB}",
+  "English A2": "\u{1F1EC}\u{1F1E7}",
+  "English B1": "\u{1F1EC}\u{1F1E7}",
+  "Music": "\u{1F3B5}",
+};
+
+// Tutor avatar colors
+const TUTOR_COLORS = {};
+const COLOR_PALETTE = ["#4AA8E0", "#5BBD6B", "#E85A3A", "#9B59B6", "#F39C12", "#1ABC9C", "#E74C3C", "#3498DB"];
+let colorIndex = 0;
+function getTutorColor(name) {
+  if (!TUTOR_COLORS[name]) {
+    TUTOR_COLORS[name] = COLOR_PALETTE[colorIndex % COLOR_PALETTE.length];
+    colorIndex++;
+  }
+  return TUTOR_COLORS[name];
+}
+
+// ============================================
+// GOOGLE SHEETS FETCHER
+// ============================================
+function sheetUrl(tabName) {
+  return `https://docs.google.com/spreadsheets/d/${CONFIG.sheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(tabName)}`;
+}
+
+function parseCSV(csv) {
+  const rows = [];
+  let current = "";
+  let inQuotes = false;
+  const lines = [];
+
+  // Split into lines respecting quoted newlines
+  for (let i = 0; i < csv.length; i++) {
+    const ch = csv[i];
+    if (ch === '"') {
+      inQuotes = !inQuotes;
+      current += ch;
+    } else if (ch === '\n' && !inQuotes) {
+      lines.push(current);
+      current = "";
+    } else if (ch === '\r' && !inQuotes) {
+      // skip \r
+    } else {
+      current += ch;
+    }
+  }
+  if (current.trim()) lines.push(current);
+
+  // Parse each line into fields
+  for (const line of lines) {
+    const fields = [];
+    let field = "";
+    let q = false;
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i];
+      if (ch === '"') {
+        if (q && line[i + 1] === '"') {
+          field += '"';
+          i++;
+        } else {
+          q = !q;
+        }
+      } else if (ch === ',' && !q) {
+        fields.push(field);
+        field = "";
+      } else {
+        field += ch;
+      }
+    }
+    fields.push(field);
+    rows.push(fields);
+  }
+
+  if (rows.length < 2) return [];
+
+  const headers = rows[0].map(h => h.trim());
+  return rows.slice(1).map(row => {
+    const obj = {};
+    headers.forEach((h, i) => {
+      obj[h] = (row[i] || "").trim();
+    });
+    return obj;
+  });
+}
+
+async function fetchSheet(tabName) {
+  const res = await fetch(sheetUrl(tabName));
+  if (!res.ok) throw new Error(`Failed to load ${tabName}`);
+  const csv = await res.text();
+  return parseCSV(csv);
+}
+
+// ============================================
+// MAIN LOGIC
+// ============================================
+const DAY_ORDER = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+let CLIENT = null;
+let SCHEDULE = [];
+let TUTORS = [];
+let HISTORY = [];
+let activeFilter = "All";
+
+function esc(str) {
+  const d = document.createElement("div");
+  d.textContent = str || "";
+  return d.innerHTML;
+}
+
+function getInitials(name) {
+  return (name || "").split(" ").map(n => n[0]).join("");
+}
+
+function parseAgeGroup(ag) {
+  const [min, max] = (ag || "0-99").split("-").map(Number);
+  return { min, max };
+}
+
+function childFitsAge(ageGroup) {
+  const { min, max } = parseAgeGroup(ageGroup);
+  return CLIENT.childAge >= min && CLIENT.childAge <= max;
+}
+
+function getFilteredSchedule() {
+  let filtered = SCHEDULE.filter(c => childFitsAge(c.ageGroup));
+  if (activeFilter !== "All") {
+    filtered = filtered.filter(c => c.subject === activeFilter);
+  }
+  return filtered;
+}
+
+function groupByDay(classes) {
+  const grouped = {};
+  for (const c of classes) {
+    if (!grouped[c.day]) grouped[c.day] = [];
+    grouped[c.day].push(c);
+  }
+  return grouped;
+}
+
+// ========== WhatsApp actions ==========
+
+function signUp(idx) {
+  const c = SCHEDULE[idx];
+  const icon = SUBJECT_ICONS[c.subject] || "\u{1F4DA}";
+
+  const overlay = document.createElement("div");
+  overlay.className = "modal-overlay";
+  overlay.id = "booking-modal";
+  overlay.innerHTML = `
+    <div class="modal">
+      <div class="modal__header">
+        <div class="modal__emoji">${icon}</div>
+        <div class="modal__title">Confirm Booking</div>
+      </div>
+      <div class="modal__body">
+        <div class="modal__detail">
+          <span class="modal__detail-icon">\u{1F9D1}\u200D\u{1F393}</span>
+          <span class="modal__detail-label">Child</span>
+          <strong>${esc(CLIENT.childName)}</strong>
+        </div>
+        <div class="modal__detail">
+          <span class="modal__detail-icon">${icon}</span>
+          <span class="modal__detail-label">Class</span>
+          <strong>${esc(c.subject)}</strong>
+        </div>
+        <div class="modal__detail">
+          <span class="modal__detail-icon">\u{1F468}\u200D\u{1F3EB}</span>
+          <span class="modal__detail-label">Tutor</span>
+          <strong>${esc(c.tutor)}</strong>
+        </div>
+        <div class="modal__detail">
+          <span class="modal__detail-icon">\u{1F4C5}</span>
+          <span class="modal__detail-label">When</span>
+          <strong>${esc(c.day)} at ${esc(c.time)}</strong>
+        </div>
+        <div class="modal__detail">
+          <span class="modal__detail-icon">\u{1F3AB}</span>
+          <span class="modal__detail-label">Cost</span>
+          <strong>${c.credits} credits</strong>
+        </div>
+      </div>
+      <div class="modal__footer">
+        <button class="btn btn-primary" id="confirm-booking-btn">Confirm &amp; Book</button>
+        <button class="btn-cancel" id="cancel-booking-btn">Cancel</button>
+      </div>
+    </div>`;
+
+  document.body.appendChild(overlay);
+
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) closeModal();
+  });
+
+  document.getElementById("cancel-booking-btn").addEventListener("click", closeModal);
+
+  document.getElementById("confirm-booking-btn").addEventListener("click", async () => {
+    const btn = document.getElementById("confirm-booking-btn");
+    btn.textContent = "Booking...";
+    btn.disabled = true;
+    btn.style.opacity = "0.7";
+
+    await saveBooking(idx);
+  });
+}
+
+async function saveBooking(idx) {
+  const c = SCHEDULE[idx];
+  const today = new Date().toISOString().split("T")[0];
+  const clientId = new URLSearchParams(window.location.search).get("client");
+
+  // Try to save to Google Sheets via Apps Script
+  let saved = false;
+  if (CONFIG.appsScriptUrl) {
+    try {
+      await fetch(CONFIG.appsScriptUrl, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify({
+          clientId: clientId,
+          date: today,
+          subject: c.subject,
+          tutor: c.tutor,
+          credits: c.credits,
+          day: c.day,
+          time: c.time,
+          childName: CLIENT.childName,
+          childAge: CLIENT.childAge,
+        }),
+      });
+      saved = true;
+    } catch (e) {
+      console.error("Apps Script error:", e);
+    }
+  }
+
+  // Update local state
+  HISTORY.push({ date: today, subject: c.subject, tutor: c.tutor });
+  CLIENT.creditsRemaining = Math.max(0, CLIENT.creditsRemaining - c.credits);
+
+  // Show success in modal
+  const modal = document.querySelector("#booking-modal .modal");
+  const icon = SUBJECT_ICONS[c.subject] || "\u{1F4DA}";
+  modal.innerHTML = `
+    <div class="modal__success">
+      <div class="modal__success-emoji">\u2705</div>
+      <div class="modal__success-title">Booked!</div>
+      <div class="modal__success-text">
+        ${esc(CLIENT.childName)} is signed up for<br>
+        <strong>${icon} ${esc(c.subject)}</strong> with ${esc(c.tutor)}<br>
+        ${esc(c.day)} at ${esc(c.time)}
+      </div>
+      <button class="btn btn-primary" id="done-btn">Done</button>
+    </div>`;
+
+  document.getElementById("done-btn").addEventListener("click", () => {
+    closeModal();
+    render();
+  });
+}
+
+function closeModal() {
+  const overlay = document.getElementById("booking-modal");
+  if (overlay) overlay.remove();
+}
+
+function requestClass() {
+  const msg = encodeURIComponent(
+    `Hi! I'd like to request a class for ${CLIENT.childName} (age ${CLIENT.childAge}).\nSubject: ___\nPreferred day/time: ___`
+  );
+  window.open(`https://wa.me/${CONFIG.teamWhatsApp}?text=${msg}`, "_blank");
+}
+
+function joinWaitlist(idx) {
+  const c = SCHEDULE[idx];
+  const msg = encodeURIComponent(
+    `Hi! I'd like to join the waitlist for:\n\n` +
+    `\u{1F4DA} ${c.subject} with ${c.tutor}\n` +
+    `\u{1F4C5} ${c.day} at ${c.time}\n\n` +
+    `for ${CLIENT.childName} (age ${CLIENT.childAge})`
+  );
+  window.open(`https://wa.me/${CONFIG.teamWhatsApp}?text=${msg}`, "_blank");
+}
+
+function chatWithUs() {
+  const msg = encodeURIComponent(`Hi! I have a question about ${CLIENT.childName}'s classes.`);
+  window.open(`https://wa.me/${CONFIG.teamWhatsApp}?text=${msg}`, "_blank");
+}
+
+// ========== RENDERERS ==========
+
+function renderHeader() {
+  return `
+    <header class="header">
+      <div class="logo">KARAKULI</div>
+      <h1 class="greeting">Student's Learning Space</h1>
+    </header>`;
+}
+
+function renderCredits() {
+  const { creditsRemaining, creditsTotal, plan } = CLIENT;
+  const pct = creditsTotal > 0 ? (creditsRemaining / creditsTotal) * 100 : 0;
+  const classesLeft = Math.floor(creditsRemaining / 25);
+
+  if (creditsRemaining <= 0) {
+    return `
+      <div class="zero-credits-banner">
+        <div class="zero-credits-banner__emoji">\u{1F389}</div>
+        <div class="zero-credits-banner__title">You've used all your credits!</div>
+        <div class="zero-credits-banner__text">Upgrade to keep learning.</div>
+        <a href="${esc(CONFIG.upgradeUrl)}" class="btn btn-primary">Upgrade to Monthly</a>
+      </div>`;
+  }
+
+  return `
+    <div class="credit-card">
+      <div class="credit-card__title">\u{1F3AB} Your Credits</div>
+      <div class="credit-card__number">${creditsRemaining} <span>/ ${creditsTotal}</span></div>
+      <div class="progress-bar"><div class="progress-bar__fill" style="width:${pct}%"></div></div>
+      <div class="credit-card__meta">
+        <span>Plan: ${esc(plan)}</span>
+        <span>Enough for ~${classesLeft} class${classesLeft !== 1 ? "es" : ""}</span>
+      </div>
+      <div class="credit-card__upgrade">
+        <a href="${esc(CONFIG.upgradeUrl)}">Need more credits? Upgrade &rarr;</a>
+      </div>
+    </div>`;
+}
+
+function renderSchedule() {
+  if (CLIENT.creditsRemaining <= 0) return "";
+
+  const ageFiltered = SCHEDULE.filter(c => childFitsAge(c.ageGroup));
+  const subjects = [...new Set(ageFiltered.map(c => c.subject))];
+  const filtered = getFilteredSchedule();
+  const grouped = groupByDay(filtered);
+
+  let filtersHtml = `
+    <div class="filters" id="filters">
+      <button class="filter-btn ${activeFilter === "All" ? "active" : ""}" data-filter="All">All</button>
+      ${subjects.map(s => `<button class="filter-btn ${activeFilter === s ? "active" : ""}" data-filter="${esc(s)}">${esc(s)}</button>`).join("")}
+    </div>`;
+
+  let cardsHtml = "";
+
+  if (filtered.length === 0 && subjects.length === 0) {
+    cardsHtml = `
+      <div class="empty-state">
+        No classes for ${esc(CLIENT.childName)}'s age group this week.<br>
+        We're adding more &mdash; <a href="javascript:void(0)" onclick="requestClass()">want to request one?</a>
+      </div>`;
+  } else if (filtered.length === 0) {
+    cardsHtml = `<div class="empty-state">No classes match this filter. Try another subject!</div>`;
+  } else {
+    for (const day of DAY_ORDER) {
+      if (!grouped[day]) continue;
+      cardsHtml += `<div class="day-header">${day}</div>`;
+      for (const c of grouped[day]) {
+        const idx = SCHEDULE.indexOf(c);
+        const notEnough = CLIENT.creditsRemaining < c.credits;
+        const full = c.spotsLeft <= 0;
+        const disabled = notEnough || full;
+        const icon = SUBJECT_ICONS[c.subject] || "\u{1F4DA}";
+        let btnHtml;
+        if (full) {
+          btnHtml = `<button class="btn btn-waitlist" onclick="joinWaitlist(${idx})">Full &mdash; join waitlist</button>`;
+        } else if (notEnough) {
+          btnHtml = `<a href="${esc(CONFIG.upgradeUrl)}" class="btn btn-disabled" style="pointer-events:auto;background:#CCC;">Not enough credits &mdash; upgrade</a>`;
+        } else {
+          btnHtml = `<button class="btn btn-primary" onclick="signUp(${idx})">Sign Up &rarr;</button>`;
+        }
+        cardsHtml += `
+          <div class="class-card ${disabled ? "disabled" : ""}">
+            <div class="class-card__header">
+              <span class="class-card__icon">${icon}</span>
+              <span class="class-card__subject">${esc(c.subject)} with ${esc(c.tutor)}</span>
+            </div>
+            <div class="class-card__details">${esc(c.time)} &middot; ${c.duration} min &middot; Ages ${esc(c.ageGroup)}</div>
+            <div class="class-card__credits">${c.credits} credits${c.spotsLeft > 0 ? ` &middot; <span class="spots">${c.spotsLeft}/${c.maxSpots} spots left</span>` : ""}</div>
+            <div class="class-card__desc">${esc(c.description)}</div>
+            ${btnHtml}
+          </div>`;
+      }
+    }
+  }
+
+  return `
+    <h2 class="section-title">This Week's Classes</h2>
+    <p class="section-subtitle">Pick a class, tap "Sign up", and we'll save your spot.</p>
+    ${filtersHtml}
+    ${cardsHtml}
+    <div class="request-box">
+      <div class="request-box__text">Can't find the right time?</div>
+      <button class="btn btn-outline" onclick="requestClass()">Request a Class</button>
+    </div>`;
+}
+
+function renderTutors() {
+  if (TUTORS.length === 0) return "";
+  const cards = TUTORS.map(t => `
+    <div class="tutor-card">
+      <div class="tutor-card__avatar" style="background:${getTutorColor(t.name)}">${getInitials(t.name)}</div>
+      <div class="tutor-card__name">${esc(t.name)}</div>
+      <div class="tutor-card__subjects">${esc(t.subjects)}</div>
+      <div class="tutor-card__bio">${esc(t.bio)}</div>
+      <div class="tutor-card__langs">\u{1F5E3} ${esc(t.languages)}</div>
+    </div>`).join("");
+
+  return `
+    <h2 class="section-title">Your Tutors</h2>
+    <div class="tutors-scroll">${cards}</div>`;
+}
+
+function renderHistory() {
+  const creditsUsed = CLIENT.creditsTotal - CLIENT.creditsRemaining;
+  let body;
+  if (HISTORY.length === 0) {
+    body = `<div class="empty-state">No classes yet &mdash; pick your first one above! \u{1F680}</div>`;
+  } else {
+    const items = HISTORY.map(h => `
+      <div class="history-item">
+        <span class="history-item__check">\u2705</span>
+        <span class="history-item__date">${esc(h.date)}</span>
+        <span>${esc(h.subject)} with ${esc(h.tutor)}</span>
+      </div>`).join("");
+    body = items + `<div class="history-summary">Credits used: ${creditsUsed} / ${CLIENT.creditsTotal}</div>`;
+  }
+
+  return `
+    <h2 class="section-title">Class History</h2>
+    ${body}`;
+}
+
+function renderFooter() {
+  return `
+    <footer class="footer">
+      <div>Need help?</div>
+      <a href="javascript:void(0)" onclick="chatWithUs()">Chat with us on WhatsApp</a>
+      <div class="footer__copyright">&copy; 2026 KARAKULI</div>
+    </footer>`;
+}
+
+function render() {
+  document.getElementById("app").innerHTML =
+    renderHeader() + renderCredits() + renderSchedule() +
+    renderTutors() + renderHistory() + renderFooter();
+
+  document.querySelectorAll(".filter-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      activeFilter = btn.dataset.filter;
+      render();
+    });
+  });
+}
+
+function showError(title, text) {
+  document.getElementById("app").innerHTML = `
+    <div class="error-state">
+      <div class="error-state__emoji">\u{1F615}</div>
+      <div class="error-state__title">${title}</div>
+      <div class="error-state__text">${text}</div>
+    </div>`;
+}
+
+// ============================================
+// BOOT
+// ============================================
+async function boot() {
+  try {
+    // Get client ID from URL: ?client=misha
+    const params = new URLSearchParams(window.location.search);
+    const clientId = params.get("client");
+
+    if (!clientId) {
+      showError("No client specified", "Add ?client=name to the URL.");
+      return;
+    }
+
+    // Fetch all three sheets in parallel
+    const [clientsRaw, scheduleRaw, historyRaw, tutorsRaw] = await Promise.all([
+      fetchSheet("Clients"),
+      fetchSheet("Schedule"),
+      fetchSheet("History"),
+      fetchSheet("Tutors"),
+    ]);
+
+    // Find client row (match by clientId column, case-insensitive)
+    const clientRow = clientsRaw.find(
+      r => (r.clientId || "").toLowerCase() === clientId.toLowerCase()
+    );
+
+    if (!clientRow) {
+      showError("Client not found", `No client "${clientId}" in the sheet. Check the Clients tab.`);
+      return;
+    }
+
+    // Parse client data
+    CLIENT = {
+      parentName: clientRow.parentName || "",
+      childName: clientRow.childName || "",
+      childAge: parseInt(clientRow.childAge) || 0,
+      creditsRemaining: parseInt(clientRow.creditsRemaining) || 0,
+      creditsTotal: parseInt(clientRow.creditsTotal) || 0,
+      plan: clientRow.plan || "Trial",
+    };
+
+    // Parse schedule
+    SCHEDULE = scheduleRaw.map(r => ({
+      subject: r.subject || "",
+      tutor: r.tutor || "",
+      day: r.day || "",
+      time: r.time || "",
+      duration: parseInt(r.duration) || 45,
+      ageGroup: r.ageGroup || "0-99",
+      credits: parseInt(r.credits) || 25,
+      spotsLeft: parseInt(r.spotsLeft) || 0,
+      maxSpots: parseInt(r.maxSpots) || 3,
+      description: r.description || "",
+    }));
+
+    // Parse history (filter by clientId)
+    HISTORY = historyRaw
+      .filter(r => (r.clientId || "").toLowerCase() === clientId.toLowerCase())
+      .map(r => ({
+        date: r.date || "",
+        subject: r.subject || "",
+        tutor: r.tutor || "",
+      }));
+
+    // Parse tutors
+    TUTORS = tutorsRaw.map(r => ({
+      name: r.name || "",
+      subjects: r.subjects || "",
+      bio: r.bio || "",
+      languages: r.languages || "",
+    }));
+
+    // Override WhatsApp / upgrade from client row if present
+    if (clientRow.teamWhatsApp) CONFIG.teamWhatsApp = clientRow.teamWhatsApp;
+    if (clientRow.upgradeUrl) CONFIG.upgradeUrl = clientRow.upgradeUrl;
+
+    document.title = `Student's Learning Space \u2014 KARAKULI`;
+    render();
+
+  } catch (err) {
+    console.error(err);
+    showError("Couldn't load data", "Check that the Google Sheet is published and the Sheet ID is correct.");
+  }
+}
+
+boot();
+</script>
+</body>
+</html>
